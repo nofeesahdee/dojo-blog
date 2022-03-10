@@ -1,21 +1,24 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import Bloglist from './Bloglist'
 
 
 const Home = () => {
-    const [blogs, setBlogs] = useState([
-        { title: "My new website", body: "lorem ipsum...", author: 'mario', id: 1},
-        { title: "Welcome party!", body: "lorem ipsum...", author: 'ninja', id: 2},
-        { title: "Web dev top tips", body: "lorem ipsum...", author: 'mario', id: 3}
-    ])
+    const [blogs, setBlogs] = useState(null)
 
-    const handleDelete = (id) => {
-        const newBlogs = blogs.filter(blog => blog.id !== id)
-        setBlogs(newBlogs)
-    }
+    // Fetch the data from the local server
+    useEffect(() => {
+        fetch(' http://localhost:8000/blogs')
+        .then(res => {
+            return res.json()
+        })
+        .then(data => {
+            setBlogs(data)
+        })
+    },[])
+    
     return ( 
         <div className="home">
-            <Bloglist blogs={blogs} title = "All Blogs!" handleDelete = {handleDelete}/>
+            {blogs &&<Bloglist blogs={blogs} title = "All Blogs!"/>}
         </div>
      );
 }
